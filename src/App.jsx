@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import './App.css'
 import Search from "./components/Search";
 import Loading_Spinner from "./components/Loading_Spinner";
+import Card_Movie from "./components/Card_movie";
+import { useDebounce } from "react-use";
+import { updateSearchCount } from "./appwrite";
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API;
@@ -19,12 +22,17 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [debounceSearchMovie, setDebounceSearchMovie] = useState("");
 
-  const fetchMovies = async () => {
+  useDebounce(()=> setDebounceSearchMovie(searchMovie), 1000, [searchMovie])
+
+  const fetchMovies = async (query = '') => {
     setIsLoading(true);
-    setErrorMessage('')
+    setErrorMessage('');
   try {
-   const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+   const endpoint = query 
+   ?`${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+   :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
    const response = await fetch(endpoint, API_OPTIONS);
 
@@ -42,6 +50,10 @@ function App() {
 
   setMovieList(data.results || [])
 
+  if(query && data.results.length > 0) {
+    await updateSearchCount(query, data.results[0]);
+  }
+
   } catch(error){
     setErrorMessage (`Error fetching the movies ${error} try later`);
   } finally {
@@ -51,8 +63,8 @@ function App() {
 
 // biome-ignore lint/correctness/useExhaustiveDependencies: <Dependency issue>
 useEffect(() => {
-fetchMovies();
-},[]);
+fetchMovies(debounceSearchMovie);
+},[debounceSearchMovie]);
 
   return (
     <>
@@ -72,7 +84,7 @@ fetchMovies();
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <h3 key={movie.id}>{movie.title}</h3>
+                <Card_Movie key={movie.id} movie={movie}/>
               ))}
             </ul>
           )

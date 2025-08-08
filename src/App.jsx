@@ -1,14 +1,11 @@
-import Search from './components/search'
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import './App.css'
+import Search from "./components/search";
 
 function App() {
 
   const [searchMovie, setSearchMovie] = useState("");
 
-  useEffect(() => {
-    
-  }, []);
 
   return (
     <>

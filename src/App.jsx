@@ -103,7 +103,7 @@ useEffect(() => {
             <h2 className="text-xl md:text-2xl text-white text-center mb-6">
               Trending Movies
             </h2>
-            <div className=" backdrop-blur-sm rounded-2xl p-4 md:p-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch]">
+            <div className=" flex justify-center backdrop-blur-sm rounded-2xl p-4 md:p-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch]">
               <div className="flex overflow-x-visible gap-4">
                 {trendingMovies.map((movie, index) => (
                   <div key={movie.$id} className="relative group">

@@ -6,7 +6,4 @@
 
 .background_img {
 	background-image: url("/background.png");
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
 }
